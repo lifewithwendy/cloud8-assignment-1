@@ -69,7 +69,7 @@ export default function LoginPage() {
         <input
           type="email"
           placeholder="Email"
-          className="mb-4 w-full rounded border px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+          className="mb-4 w-full rounded border px-3 py-2 text-gray-900 focus:outline-none focus:ring focus:ring-blue-300"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -77,7 +77,7 @@ export default function LoginPage() {
         <input
           type="password"
           placeholder="Password"
-          className="mb-4 w-full rounded border px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+          className="mb-4 w-full rounded border px-3 py-2 text-gray-900 focus:outline-none focus:ring focus:ring-blue-300"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

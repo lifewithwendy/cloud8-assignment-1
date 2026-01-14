@@ -5,20 +5,19 @@ import { useRouter } from "next/navigation";
 
 interface LoginResponse {
   name?: string;
-  email?: string;
   message?: string;
 }
 
 export default function LoginPage() {
   const router = useRouter();
-  const URL = "https://t5bzetvc0d.execute-api.us-west-2.amazonaws.com/dev/login";
+  const URL = "http://localhost:3001/login";
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (): Promise<void> => {
+  const handleLogin = async () => {
     setError("");
     setIsLoading(true);
 
@@ -27,7 +26,6 @@ export default function LoginPage() {
       setIsLoading(false);
       return;
     }
-
     if (!password.trim()) {
       setError("Password cannot be empty");
       setIsLoading(false);
@@ -35,19 +33,14 @@ export default function LoginPage() {
     }
 
     try {
-      // TEMPORARY: Bypass login for testing purposes
-      /*
-      const response = await fetch(
-        URL,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": "vkEeGJPk4T4LT6QZ5dWaO6so3ofj0gS82jx2uj3L",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "vkEeGJPk4T4LT6QZ5dWaO6so3ofj0gS82jx2uj3L",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
       const data: LoginResponse = await response.json();
 
@@ -56,14 +49,11 @@ export default function LoginPage() {
         setIsLoading(false);
         return;
       }
-      */
 
-      // Mock successful login
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Fake network delay
-      const data: LoginResponse = { name: "Test User", email, message: "Login successful" };
-
+      // Success
       localStorage.setItem("user", JSON.stringify(data));
       router.push("/home");
+
     } catch {
       setError("Something went wrong. Please try again.");
       setIsLoading(false);
@@ -76,9 +66,9 @@ export default function LoginPage() {
         <h2 className="mb-6 text-center text-2xl font-bold text-gray-900">Login</h2>
 
         <input
-          type="text"
-          placeholder="Username"
-          className="mb-4 w-full rounded border px-3 py-2 text-gray-900 focus:outline-none focus:ring focus:ring-blue-300"
+          type="email"
+          placeholder="Email"
+          className="mb-4 w-full rounded border px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -86,14 +76,12 @@ export default function LoginPage() {
         <input
           type="password"
           placeholder="Password"
-          className="mb-4 w-full rounded border px-3 py-2 text-gray-900 focus:outline-none focus:ring focus:ring-blue-300"
+          className="mb-4 w-full rounded border px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {error && (
-          <p className="mb-4 text-sm text-red-500">{error}</p>
-        )}
+        {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
 
         <button
           onClick={handleLogin}

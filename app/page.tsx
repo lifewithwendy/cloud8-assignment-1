@@ -10,7 +10,7 @@ interface LoginResponse {
 
 export default function LoginPage() {
   const router = useRouter();
-  const URL = "http://localhost:3001/login";
+  const URL = "/api/proxy/login";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,7 +54,8 @@ export default function LoginPage() {
       localStorage.setItem("user", JSON.stringify(data));
       router.push("/home");
 
-    } catch {
+    } catch (error) {
+      console.error(error);
       setError("Something went wrong. Please try again.");
       setIsLoading(false);
     }

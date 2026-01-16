@@ -1,1 +1,1 @@
-ssh -i "~/.ssh/ass.pem" ubuntu@ec2-54-87-129-237.compute-1.amazonaws.com
+ssh -i "~/.ssh/ass.pem" http://ec2-54-226-227-38.compute-1.amazonaws.com

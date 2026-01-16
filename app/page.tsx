@@ -51,7 +51,8 @@ export default function LoginPage() {
       }
 
       // Success
-      localStorage.setItem("user", JSON.stringify(data));
+      const expiry = new Date().getTime() + 5 * 60 * 1000; // 5 minutes from now
+      localStorage.setItem("user", JSON.stringify({ ...data, expiry }));
       router.push("/home");
 
     } catch (error) {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface LoginResponse {
+  token?: string;
   name?: string;
   message?: string;
 }
@@ -67,9 +68,15 @@ export default function LoginPage() {
       }
 
       // Success
-      const expiry = new Date().getTime() + 5 * 60 * 1000; // 5 minutes from now
-      localStorage.setItem("user", JSON.stringify({ ...data, expiry }));
-      router.push("/home");
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        // Also store user info if available, or rely on decoding the token later
+        localStorage.setItem("user", JSON.stringify({ name: data.name }));
+        router.push("/home");
+      } else {
+         setError("No token received from server");
+         setIsLoading(false);
+      }
 
     } catch (error) {
       console.error(error);

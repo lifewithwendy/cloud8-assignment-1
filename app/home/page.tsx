@@ -2,29 +2,55 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
+
+interface JwtPayload {
+  name: string;
+  exp: number;
+}
 
 export default function HomePage() {
   const [name, setName] = useState("");
   const router = useRouter();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (!user) {
+    const token = localStorage.getItem("token");
+    const userStr = localStorage.getItem("user");
+
+    if (!token) {
       router.push("/");
       return;
     }
-    const parsed = JSON.parse(user);
 
-    if (parsed.expiry && new Date().getTime() > parsed.expiry) {
+    try {
+      const decoded = jwtDecode<JwtPayload>(token);
+      
+      // Check expiration (exp is in seconds)
+      if (decoded.exp * 1000 < Date.now()) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        router.push("/");
+        return;
+      }
+
+      // Use name from token, or fallback to stored user object
+      let tempName = decoded.name;
+      if (!tempName && userStr) {
+          const parsed = JSON.parse(userStr);
+          tempName = parsed.name;
+      }
+      
+      setName(tempName || "User");
+    } catch (error) {
+      console.error("Invalid token:", error);
+      localStorage.removeItem("token");
       localStorage.removeItem("user");
       router.push("/");
-      return;
     }
-
-    setName(parsed.name || "");
   }, [router]);
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
     router.push("/");
   };
